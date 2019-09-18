@@ -52,6 +52,13 @@ UI.prototype.showDialog = function(message, className) {
   }, 3000);
 };
 
+//Add Deletebook func to prototype
+UI.prototype.deleteBook = function(target) {
+  if (target.classList.contains("delete")) {
+    target.parentElement.parentElement.remove();
+  }
+};
+
 //Add event handler to form element
 document.getElementById("book-form").addEventListener("submit", function(e) {
   const title = document.getElementById("title").value;
@@ -76,5 +83,17 @@ document.getElementById("book-form").addEventListener("submit", function(e) {
     ui.clear();
   }
 
+  e.preventDefault();
+});
+
+//Event Listener for delete functionality
+document.getElementById("book-list").addEventListener("click", function(e) {
+  //Initialize the UI objet
+  const ui = new UI();
+
+  //Add delete via event delegation
+  ui.deleteBook(e.target);
+  //Show success delete message
+  ui.showDialog("Deleted Successfully", "success");
   e.preventDefault();
 });
