@@ -31,6 +31,27 @@ UI.prototype.clear = function() {
   document.getElementById("isbn").value = "";
 };
 
+//Add showDialogfunction to prototype
+UI.prototype.showDialog = function(message, className) {
+  //Create a div element
+  const div = document.createElement("div");
+  //Add classes and textNode
+  div.className = `alert ${className}`;
+  div.appendChild(document.createTextNode(message));
+
+  //Get parent tag and form
+  const container = document.querySelector(".container");
+  const form = document.querySelector("#book-form");
+
+  //Add div dialog box before the form
+  container.insertBefore(div, form);
+
+  //Set timeout function
+  setTimeout(function() {
+    document.querySelector(".alert").remove();
+  }, 3000);
+};
+
 //Add event handler to form element
 document.getElementById("book-form").addEventListener("submit", function(e) {
   const title = document.getElementById("title").value;
@@ -43,10 +64,17 @@ document.getElementById("book-form").addEventListener("submit", function(e) {
   //create a UI object
   const ui = new UI();
 
-  //Add book to list --> function to be added to UI
-  ui.addBooktoList(book);
+  //Check if all the fields are filled
+  if (title === "" || author == "" || isbn === "") {
+    //Show error dialog
+    ui.showDialog("All input fields are required", "error");
+  } else {
+    //Add book to list --> function to be added to UI
+    ui.addBooktoList(book);
 
-  ui.clear();
+    //clear all input fields
+    ui.clear();
+  }
 
   e.preventDefault();
 });
