@@ -55,6 +55,51 @@ class UI {
   }
 }
 
+class Store {
+  static getBooks() {
+    let books;
+    if (localStorage.getItem("books") === null) {
+      books = [];
+    } else {
+      books = JSON.parse(localStorage.getItem("books"));
+    }
+    return books;
+  }
+
+  static displayBooks() {
+    //Initialize the UI object
+    const ui = new UI();
+    const books = Store.getBooks();
+    books.forEach(book => {
+      ui.addBooktoList(book);
+    });
+  }
+
+  static addBook(book) {
+    const books = Store.getBooks();
+
+    books.push(book);
+
+    //set LS
+    localStorage.setItem("books", JSON.stringify(books));
+  }
+
+  static removeBook(isbn) {
+    const books = Store.getBooks();
+
+    books.forEach(function(book, index) {
+      if (book.isbn == isbn) {
+        books.splice(index, 1);
+      }
+      //Set Items back to LS
+      localStorage.setItem("books", JSON.stringify(books));
+    });
+  }
+}
+
+//Add DOM listener
+document.addEventListener("DOMContentLoaded", Store.displayBooks());
+
 //Add event handler to add element
 document.getElementById("book-form").addEventListener("submit", function(e) {
   const title = document.getElementById("title").value;
@@ -75,6 +120,9 @@ document.getElementById("book-form").addEventListener("submit", function(e) {
     //Add book to list --> function to be added to UI
     ui.addBooktoList(book);
 
+    //Add Book to Ls
+    Store.addBook(book);
+
     //Add success dialog message
     ui.showDialog("Book Added Succesfully", "success");
 
@@ -92,6 +140,10 @@ document.getElementById("book-list").addEventListener("click", function(e) {
 
   //Add delete via event delegation
   ui.deleteBook(e.target);
+
+  //Delete book from LS
+  Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
+
   if (e.target.classList.contains("delete")) {
     //Show success delete message
     ui.showDialog("Deleted Successfully", "success");
