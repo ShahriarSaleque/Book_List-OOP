@@ -59,7 +59,7 @@ UI.prototype.deleteBook = function(target) {
   }
 };
 
-//Add event handler to form element
+//Add event handler to add element
 document.getElementById("book-form").addEventListener("submit", function(e) {
   const title = document.getElementById("title").value;
   const author = document.getElementById("author").value;
@@ -79,6 +79,9 @@ document.getElementById("book-form").addEventListener("submit", function(e) {
     //Add book to list --> function to be added to UI
     ui.addBooktoList(book);
 
+    //Show success message
+    ui.showDialog("Book Successfully added", "success");
+
     //clear all input fields
     ui.clear();
   }
@@ -88,12 +91,15 @@ document.getElementById("book-form").addEventListener("submit", function(e) {
 
 //Event Listener for delete functionality
 document.getElementById("book-list").addEventListener("click", function(e) {
-  //Initialize the UI objet
+  //Initialize the UI object
   const ui = new UI();
 
   //Add delete via event delegation
   ui.deleteBook(e.target);
-  //Show success delete message
-  ui.showDialog("Deleted Successfully", "success");
+  if (e.target.classList.contains("delete")) {
+    //Show success delete message
+    ui.showDialog("Deleted Successfully", "success");
+  }
+
   e.preventDefault();
 });
